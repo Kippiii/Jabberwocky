@@ -1,3 +1,6 @@
 [submodule "container_manager"]
 	path = container_manager
 	url = https://github.com/Kippiii/jabberwocky-container-manager
+[submodule "class_site"]
+	path = class_site
+	url = https://github.com/Kippiii/jaberwockey-class-site
