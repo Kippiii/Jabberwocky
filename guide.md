@@ -36,7 +36,7 @@ jab get-file [container_name] [path_to_source] [path_to_destination]
 
 If you would like to open the interactive shell of the container, you can run the following:
 ```shell
-jab interactive [container_name]
+jab interact [container_name]
 ```
 
 Finally, when you are done using the container, we recommend that you stop it to ensure that it exits properly. When you are done using the container, you can run the following command to stop it:
