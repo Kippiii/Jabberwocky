@@ -4,3 +4,6 @@
 [submodule "class_site"]
 	path = class_site
 	url = https://github.com/Kippiii/jaberwockey-class-site
+[submodule "repo_server"]
+	path = repo_server
+	url = https://github.com/Kippiii/jabberwocky-repo
