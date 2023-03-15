@@ -1,0 +1,16 @@
+version: "1.0"
+services:
+  default:
+    build:
+      context: ../..
+      dockerfile: test/repo_server/Dockerfile
+    volumes: 
+      - ../share:/share
+    container_name: repo_server
+    command: python -m poetry run flask --app main run --host=0.0.0.0
+    expose:
+      - 5000
+networks: 
+  default: 
+    external: true
+    name: jabberwocky

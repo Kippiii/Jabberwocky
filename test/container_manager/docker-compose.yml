@@ -1,8 +1,15 @@
 version: "0.4"
 services:
-  web:
+  default:
     build:
       context: ../..
       dockerfile: test/container_manager/Dockerfile
     volumes: 
-      - ../share:/app/container_manager/share
+      - ../share:/share
+    privileged: true
+    container_name: container_manager
+    command: tail -F anything
+networks: 
+  default:
+    external: true
+    name: jabberwocky

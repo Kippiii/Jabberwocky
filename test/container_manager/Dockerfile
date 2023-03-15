@@ -10,10 +10,11 @@ COPY ./test/pytest /app/container_manager/test
 WORKDIR /app/container_manager
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install poetry pytest-reportlog
+RUN python -m pip install poetry pytest-depends
 RUN python -m poetry install
+
+RUN apt-get update -y
+RUN apt-get install qemu-system-x86 -y
 
 RUN mkdir /root/.containers
 RUN touch /root/.containers/server.log
-
-ENTRYPOINT python -m poetry run pytest ./test
