@@ -1,8 +1,13 @@
 import pytest
 
-from test_common import send_cmd_to_cli
+from src.cli.cli import JabberwockyCLI
 
-def test_ct_gcc(out_stream, cli, ct_container) -> None:
+from test_common import send_cmd_to_cli, MyStream
+
+def test_ct_gcc(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Ensures that sparc linux gcc is working in the ct container
+    """
     try:
         send_cmd_to_cli(cli, out_stream, ["put-file", "ct", "/share/hello_world.c", "hello_world.c"])
         send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-gcc", "hello_world.c", "-o", "hello_world.o"])
@@ -11,7 +16,10 @@ def test_ct_gcc(out_stream, cli, ct_container) -> None:
     finally:
         send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "hello_world.c", "hello_world.o"])
 
-def test_ct_java(out_stream, cli, ct_container) -> None:
+def test_ct_java(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Ensures that java is installed and working in the ct container
+    """
     try:
         send_cmd_to_cli(cli, out_stream, ["put-file", "ct", "/share/HelloWorld.java", "HelloWorld.java"])
         send_cmd_to_cli(cli, out_stream, ["run", "ct", "javac", "HelloWorld.java"])
@@ -20,7 +28,10 @@ def test_ct_java(out_stream, cli, ct_container) -> None:
     finally:
         send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "HelloWorld.java", "HelloWorld.class"])
 
-def test_ct_sparc_asm(out_stream, cli, ct_container) -> None:
+def test_ct_sparc_asm(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Ensures that sparc linux as and ld are working in the ct container
+    """
     try:
         send_cmd_to_cli(cli, out_stream, ["put-file", "ct", "/share/hello_world.S", "hello_world.S"])
         send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-as", "hello_world.S"])

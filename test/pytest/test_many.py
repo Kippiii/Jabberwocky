@@ -1,8 +1,13 @@
 import pytest
 
-from test_common import send_cmd_to_cli
+from src.cli.cli import JabberwockyCLI
 
-def test_many(out_stream, cli):
+from test_common import send_cmd_to_cli, MyStream
+
+def test_many(out_stream: MyStream, cli: JabberwockyCLI):
+    """
+    Ensures that five containers can be run at the same time
+    """
     try:
         # Install all containers
         for i in range(5):
