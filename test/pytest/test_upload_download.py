@@ -16,7 +16,7 @@ def test_download(out_stream: MyStream, in_stream: MyStream, cli: JabberwockyCLI
     send_cmd_to_cli(cli, out_stream, ["start", "downloaded"])
     try:
         s = send_cmd_to_cli(cli, out_stream, ["run", "downloaded", "whoami"])
-        assert s == "root"
+        assert s == "root\n"
     finally:
         send_cmd_to_cli(cli, out_stream, ["stop", "downloaded"])
         send_cmd_to_cli(cli, out_stream, ["delete", "downloaded"])

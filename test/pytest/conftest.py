@@ -10,14 +10,14 @@ def out_stream() -> MyStream:
     """
     The output stream that the cli sends to
     """
-    yield MyStream()
+    yield MyStream(1)
 
 @pytest.fixture(scope="session")
 def in_stream() -> MyStream:
     """
     The input stream that the cli takes from
     """
-    yield MyStream()
+    yield MyStream(0)
 
 @pytest.fixture(scope="session")
 def cli(out_stream: MyStream, in_stream: MyStream) -> JabberwockyCLI:

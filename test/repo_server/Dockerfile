@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 WORKDIR /app
 
-COPY ./repo_server/Auth.py /app/repo_server/Auth.py
+COPY ./test/share/Auth.py /app/repo_server/Auth.py
 COPY ./repo_server/config.json /app/repo_server/config.json
 COPY ./repo_server/Config.py /app/repo_server/Config.py
 COPY ./repo_server/FileSystem.py /app/repo_server/FileSystem.py

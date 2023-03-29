@@ -10,6 +10,5 @@ def test_help(out_stream: MyStream, cli: JabberwockyCLI) -> None:
     """
     Ensures that the help command is working
     """
-    cli.parse_cmd(["help"])
-    out = out_stream.getvalue()
+    out = send_cmd_to_cli(cli, out_stream, ["help"])
     assert out.startswith("Usage:")

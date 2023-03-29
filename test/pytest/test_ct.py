@@ -9,22 +9,22 @@ def test_ct_gcc(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -
     Ensures that sparc linux gcc is working in the ct container
     """
     try:
-        send_cmd_to_cli(cli, out_stream, ["put-file", "ct", "/share/hello_world.c", "hello_world.c"])
-        send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-gcc", "hello_world.c", "-o", "hello_world.o"])
-        s = send_cmd_to_cli(cli, out_stream, ["run", "ct", "./hello_world.o"])
-        assert s == "Hello World!"
+        send_cmd_to_cli(cli, out_stream, ["send-file", "ct", "/share/hello_world.c", "hello_world.c"])
+        send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-gcc", "hello_world.c"])
+        s = send_cmd_to_cli(cli, out_stream, ["run", "ct", "./a.out"])
+        assert s == "Hello World!\n"
     finally:
-        send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "hello_world.c", "hello_world.o"])
+        send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "hello_world.c", "a.out"])
 
 def test_ct_java(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
     """
     Ensures that java is installed and working in the ct container
     """
     try:
-        send_cmd_to_cli(cli, out_stream, ["put-file", "ct", "/share/HelloWorld.java", "HelloWorld.java"])
+        send_cmd_to_cli(cli, out_stream, ["send-file", "ct", "/share/HelloWorld.java", "HelloWorld.java"])
         send_cmd_to_cli(cli, out_stream, ["run", "ct", "javac", "HelloWorld.java"])
         s = send_cmd_to_cli(cli, out_stream, ["run", "ct", "java", "HelloWorld"])
-        assert s == "Hello World!"
+        assert s == "Hello World!\n"
     finally:
         send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "HelloWorld.java", "HelloWorld.class"])
 
@@ -33,10 +33,10 @@ def test_ct_sparc_asm(out_stream: MyStream, cli: JabberwockyCLI, ct_container: N
     Ensures that sparc linux as and ld are working in the ct container
     """
     try:
-        send_cmd_to_cli(cli, out_stream, ["put-file", "ct", "/share/hello_world.S", "hello_world.S"])
-        send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-as", "hello_world.S"])
-        send_cmd_to_cli(cli, out_stream, ["run", "ct", "ld", "-o", "hello_world.out", "-dn", "-s", "hello_world.o"])
+        send_cmd_to_cli(cli, out_stream, ["send-file", "ct", "/share/hello_world.S", "hello_world.S"])
+        send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-as", "hello_world.S", "-o", "hello_world.o"])
+        send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-ld", "-o", "hello_world.out", "-dn", "-s", "hello_world.o"])
         s = send_cmd_to_cli(cli, out_stream, ["run", "ct", "./hello_world.out"])
-        assert s == "Hello World!"
+        assert s == "Hello World!\n"
     finally:
-        send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "rf", "hello_world.S", "hello_world.out", "hello_world.o"])
+        send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "hello_world.S", "hello_world.out", "hello_world.o"])

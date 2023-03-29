@@ -24,12 +24,12 @@ def test_many(out_stream: MyStream, cli: JabberwockyCLI):
         # Ensure files are right for each container
         for i in range(5):
             s = send_cmd_to_cli(cli, out_stream, ["run", f"ct{i}", "ls"])
-            assert s == f"file{i}"
+            assert s == f"file{i}\n"
 
     finally:
         # Stop all containers
         for i in range(5):
-            send_cmd_to_cli(cli, out_strema, ["stop", f"ct{i}"])
+            send_cmd_to_cli(cli, out_stream, ["stop", f"ct{i}"])
 
         # Delete all containers
         for i in range(5):

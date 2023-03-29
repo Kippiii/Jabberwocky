@@ -17,9 +17,11 @@ class MyStream:
     :param buffer: The conent currently saved in the stream
     """
     buffer: str
+    num: int
 
-    def __init__(self) -> None:
+    def __init__(self, num: int) -> None:
         self.buffer = ""
+        self.num = num
 
     def read(self, n: int = 9999999999) -> str:
         """
@@ -43,13 +45,15 @@ class MyStream:
             if c == '\n':
                 break
             ret_val += c
+        if ret_val == "":
+            ret_val = "\0"
         return ret_val
 
     def write(self, s: str) -> None:
         """
         Write a string to the buffer
 
-        :param s: The string being written to the buffer
+        :param s: The string being written the buffer
         """
         self.buffer += s
 
@@ -58,6 +62,9 @@ class MyStream:
         Flushes the stream
         """
         pass
+    
+    def fileno(self) -> int:
+        return self.num
 
 def send_cmd_to_cli(cli: JabberwockyCLI, out_stream: MyStream, cmd: List[str]) -> str:
     """

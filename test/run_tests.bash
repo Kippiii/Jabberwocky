@@ -2,11 +2,11 @@
 
 test_scripts=()
 all_test_scripts=()
-#all_test_scripts+=("test_help")
-#all_test_scripts+=("test_run")
-#all_test_scripts+=("test_put_get")
-#all_test_scripts+=("test_ct")
-#all_test_scripts+=("test_many")
+all_test_scripts+=("test_help")
+all_test_scripts+=("test_run")
+all_test_scripts+=("test_put_get")
+all_test_scripts+=("test_ct")
+all_test_scripts+=("test_many")
 all_test_scripts+=("test_upload_download")
 
 for var in "$@"

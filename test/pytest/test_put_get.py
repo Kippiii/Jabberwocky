@@ -1,11 +1,11 @@
 import pytest
+import os
 from pathlib import Path
 
 from src.cli.cli import JabberwockyCLI
 
 from test_common import send_cmd_to_cli, gen_random_local_file, gen_random_str, check_files_equal, MyStream
 
-@pytest.mark.depends(on=['test_install'])
 def test_put_get(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
     """
     Ensures that file put and get work by sending a file to ct and getting it out
@@ -25,3 +25,76 @@ def test_put_get(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) 
 
     # Ensure files are equal
     assert check_files_equal(start_file, end_file)
+
+def test_get_empty_file(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Creates an empty file and then gets it
+    """
+    # Touch an empty file on the container
+    send_cmd_to_cli(cli, out_stream, ['run', 'ct', 'touch', 'empty_file'])
+
+    # Get the file
+    send_cmd_to_cli(cli, out_stream, ['get-file', 'ct', 'empty_file'])
+
+    # Check file exists
+    assert os.path.exists('empty_file') and os.path.getsize('empty_size') == 0
+
+def test_root_transfer(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Test put and get file using ~
+    """
+    # Generate a random file
+    filename: str = gen_random_str()
+    start_file: Path = Path("/app/container_manager") / filename
+    gen_random_local_file(start_file)
+
+    # Send random file to container
+    send_cmd_to_cli(cli, out_stream, ['send-file', 'ct', str(start_file), '~'])
+
+    # Get random file from container (assumes we aren't in root)
+    send_cmd_to_cli(cli, out_stream, ['get-file', 'ct', f'~/{str(filename)}', '~'])
+
+    # Ensure files are equal
+    assert check_files_equal(start_file, Path('~') / filename)
+
+def test_send_file_no_exist(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Tests a failure in sending a file to the container
+    """
+    s = send_cmd_to_cli(cli, out_stream, ['send-file', 'ct', 'file_does_not_exist', 'file'])
+    assert 'InvalidPathError' in s
+
+def test_get_file_no_exist(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Tests getting a file that does not exist
+    """
+    s = send_cmd_to_cli(cli, out_stream, ['get-file', 'ct', 'file_does_not_exist', 'file'])
+    assert 'InvalidPathError' in s
+
+def test_send_file_invalid_dir(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Tests sending a file to an invalid directory
+    """
+    # Generate a random file
+    start_file: Path = Path("/app/container_manager") / gen_random_str()
+    gen_random_local_file(start_file)
+
+    # Send file to invalid directory
+    s = send_cmd_to_cli(cli, out_stream, ['send-file', 'ct', str(start_file), 'invalid_directory/the_file'])
+    assert 'InvalidPathError' in s
+
+def test_get_file_invalid_dir(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+    """
+    Tests getting a file to an invalid directory
+    """
+    # Generate a random file
+    file_name: str = gen_random_str()
+    start_file: Path = Path("/app/container_manager") / file_name
+    gen_random_local_file(start_file)
+
+    # Send file to container
+    send_cmd_to_cli(cli, out_stream, ['send-file', 'ct', str(start_file)])
+
+    # Get file to invalid directory
+    s = send_cmd_to_cli(cli, out_stream, ['get-file', 'ct', file_name, 'invalid_directory/the_file'])
+    assert 'InvalidPathError' in s
