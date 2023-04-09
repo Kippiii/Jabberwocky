@@ -15,7 +15,7 @@ def test_build_x86(out_stream: MyStream, cli: JabberwockyCLI) -> None:
     with open('x86_building/manifest.json') as f:
         manifest: dict = json.load(f)
     manifest['arch'] = 'x86_64'
-    manifest['aptpkgs'] = 'gdb /share/python3.9_3.9.2-1_amd64.deb'
+    manifest['aptpkgs'] = 'gdb /share/python3.9_3.9.2-1_i386.deb'
     with open('x86_building/manifest.json', 'w') as f:
         json.dump(manifest, f)
     

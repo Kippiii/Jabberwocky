@@ -10,11 +10,15 @@ def test_ct_gcc(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -
     """
     try:
         send_cmd_to_cli(cli, out_stream, ["send-file", "ct", "/share/hello_world.c", "hello_world.c"])
-        send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-gcc", "hello_world.c"])
-        s = send_cmd_to_cli(cli, out_stream, ["run", "ct", "./a.out"])
+        send_cmd_to_cli(cli, out_stream, ["run", "ct", "sparc-linux-gcc", "-o", "hello.out", "hello_world.c"])
+        send_cmd_to_cli(cli, out_stream, ['run', 'ct', 'chmod', 'u+x', 'hello.out'])
+        s = send_cmd_to_cli(cli, out_stream, ["run", "ct", "./hello.out"])
         assert s == "Hello World!\n"
+    except AssertionError as exc:
+        s = send_cmd_to_cli(cli, out_stream, ['run', 'ct', 'ls'])
+        raise Exception(s) from exc
     finally:
-        send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "hello_world.c", "a.out"])
+        send_cmd_to_cli(cli, out_stream, ["run", "ct", "rm", "-rf", "hello_world.c", "hello.out"])
 
 def test_ct_java(out_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
     """

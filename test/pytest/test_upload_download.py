@@ -1,6 +1,8 @@
+import os
 import pytest
 import shutil
 from pathlib import Path
+import tarfile
 
 from src.cli.cli import JabberwockyCLI
 
@@ -28,11 +30,14 @@ def test_upload(out_stream: MyStream, in_stream: MyStream, cli: JabberwockyCLI, 
     send_cmd_to_cli(cli, out_stream, ["stop", "ct"])
     try:
         in_stream.write("admin\nadminadmin\n")
-        send_cmd_to_cli(cli, out_stream, ["upload", "ct", f"http://{get_repo_server_ip()}:5000"])
+        s = send_cmd_to_cli(cli, out_stream, ["upload", "ct", f"http://{get_repo_server_ip()}:5000"])
 
-        assert Path("/share/ct.tar.gz").is_file(), "File not created!"
+        try:
+            assert Path("/share/ct.tar.gz").is_file(), "File not created!"
+        except Exception as exc:
+            raise Exception(s) from exc
         with tarfile.open("/share/ct.tar.gz", "r:gz") as tar:
-            names = tar.get_names()
+            names = tar.getnames()
             assert len(names) == 2, f"len({names}) != 2"
             assert "config.json" in names, "config.json not in archive"
             assert "hdd.qcow2" in names, "hdd.qcow2 not in archive"
