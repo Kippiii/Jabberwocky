@@ -4,6 +4,7 @@ from src.cli.cli import JabberwockyCLI
 
 from test_common import send_cmd_to_cli, MyStream
 
+
 def test_many(out_stream: MyStream, cli: JabberwockyCLI):
     """
     Ensures that five containers can be run at the same time
@@ -15,7 +16,7 @@ def test_many(out_stream: MyStream, cli: JabberwockyCLI):
 
         # Start all containers
         for i in range(5):
-            send_cmd_to_cli(cli, out_stream, ['start', f'ct{i}'])
+            send_cmd_to_cli(cli, out_stream, ["start", f"ct{i}"])
 
         # Create files in each container
         for i in range(5):

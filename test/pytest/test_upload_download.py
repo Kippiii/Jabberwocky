@@ -8,11 +8,16 @@ from src.cli.cli import JabberwockyCLI
 
 from test_common import send_cmd_to_cli, get_repo_server_ip, MyStream
 
-def test_download(out_stream: MyStream, in_stream: MyStream, cli: JabberwockyCLI) -> None:
+
+def test_download(
+    out_stream: MyStream, in_stream: MyStream, cli: JabberwockyCLI
+) -> None:
     """
     Downloads a container from the repo server
     """
-    send_cmd_to_cli(cli, out_stream, ["add-repo", f"http://{get_repo_server_ip()}:5000"])
+    send_cmd_to_cli(
+        cli, out_stream, ["add-repo", f"http://{get_repo_server_ip()}:5000"]
+    )
     in_stream.write("y\n")
     send_cmd_to_cli(cli, out_stream, ["download", "ct.tar.bz2", "downloaded"])
     send_cmd_to_cli(cli, out_stream, ["start", "downloaded"])
@@ -23,14 +28,19 @@ def test_download(out_stream: MyStream, in_stream: MyStream, cli: JabberwockyCLI
         send_cmd_to_cli(cli, out_stream, ["stop", "downloaded"])
         send_cmd_to_cli(cli, out_stream, ["delete", "downloaded"])
 
-def test_upload(out_stream: MyStream, in_stream: MyStream, cli: JabberwockyCLI, ct_container: None) -> None:
+
+def test_upload(
+    out_stream: MyStream, in_stream: MyStream, cli: JabberwockyCLI, ct_container: None
+) -> None:
     """
     Uploads a container to the repo server
     """
     send_cmd_to_cli(cli, out_stream, ["stop", "ct"])
     try:
         in_stream.write("admin\nadminadmin\n")
-        s = send_cmd_to_cli(cli, out_stream, ["upload", "ct", f"http://{get_repo_server_ip()}:5000"])
+        s = send_cmd_to_cli(
+            cli, out_stream, ["upload", "ct", f"http://{get_repo_server_ip()}:5000"]
+        )
 
         try:
             assert Path("/share/ct.tar.gz").is_file(), "File not created!"
