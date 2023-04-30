@@ -10,7 +10,7 @@ from test_common import send_cmd_to_cli, MyStream
 def test_build_x86(out_stream: MyStream, cli: JabberwockyCLI) -> None:
     """
     Tests building with x86_64
-    Also tests installing gdb and python deb package
+    Also tests installing gcc and python deb package
     """
     send_cmd_to_cli(cli, out_stream, ["build-init", "x86_building"])
 
@@ -18,7 +18,7 @@ def test_build_x86(out_stream: MyStream, cli: JabberwockyCLI) -> None:
     with open("x86_building/manifest.json") as f:
         manifest: dict = json.load(f)
     manifest["arch"] = "x86_64"
-    manifest["aptpkgs"] = "gdb"
+    manifest["aptpkgs"] = "gcc"
     with open("x86_building/manifest.json", "w") as f:
         json.dump(manifest, f)
 
@@ -31,17 +31,19 @@ def test_build_x86(out_stream: MyStream, cli: JabberwockyCLI) -> None:
     )
     send_cmd_to_cli(cli, out_stream, ["start", "x86_built"])
     try:
+        send_cmd_to_cli(cli, out_stream, ["send-file", "x86_built", "/share/hello_world.c", "hello_world.c"])
         send_cmd_to_cli(
             cli,
             out_stream,
-            ["run", "x86_built", "gdb", "-o", "hello.o", "/share/hello_world.c"],
+            ["run", "x86_built", "gcc", "-o", "hello.o", "hello_world.c"],
         )
         s = send_cmd_to_cli(cli, out_stream, ["run", "x86_built", "./hello.o"])
-        assert s == "Hello World\n"
+        assert s == "Hello World!\n"
+        send_cmd_to_cli(cli, out_stream, ["send-file", "x86_built", "/share/hello_world.py", "hello_world.py"])
         s = send_cmd_to_cli(
-            cli, out_stream, ["run", "x86_built", "python", "hello_world.py"]
+            cli, out_stream, ["run", "x86_built", "python3.9", "hello_world.py"]
         )
-        assert s == "Hello World\n"
+        assert s == "Hello World!\n"
     finally:
         send_cmd_to_cli(cli, out_stream, ["stop", "x86_built"])
         send_cmd_to_cli(cli, out_stream, ["delete", "x86_built"])

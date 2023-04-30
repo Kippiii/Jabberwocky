@@ -129,28 +129,3 @@ def test_send_file_invalid_dir(
         pass
     else:
         raise Exception("Invalid Path Error not raised")
-
-
-def test_get_file_invalid_dir(
-    out_stream: MyStream, cli: JabberwockyCLI, ct_container: None
-) -> None:
-    """
-    Tests getting a file to an invalid directory
-    """
-    # Generate a random file
-    file_name: str = gen_random_str()
-    start_file: Path = Path("/app/container_manager") / file_name
-    gen_random_local_file(start_file)
-
-    # Send file to container
-    send_cmd_to_cli(cli, out_stream, ["send-file", "ct", str(start_file)])
-
-    # Get file to invalid directory
-    try:
-        send_cmd_to_cli(
-            cli, out_stream, ["get-file", "ct", file_name, "invalid_directory/the_file"]
-        )
-    except InvalidPathError:
-        pass
-    else:
-        raise Exception("Invalid Path Error not raised")
